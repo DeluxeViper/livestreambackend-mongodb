@@ -1,6 +1,7 @@
-package com.deluxeviper.livestreambackend;
+package com.deluxeviper.livestreambackend.Controllers;
 
 import com.deluxeviper.livestreambackend.Models.User;
+import com.deluxeviper.livestreambackend.Services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,4 +20,6 @@ public class UserController {
     public List<User> fetchAllUsers() {
         return userService.getAllUsers();
     }
+
+
 }

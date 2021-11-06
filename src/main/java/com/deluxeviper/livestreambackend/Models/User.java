@@ -3,25 +3,42 @@ package com.deluxeviper.livestreambackend.Models;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Document
 public class User {
     @Id
     private String id;
-    private String firstName;
-    private String lastName;
+
+    @NotBlank
+    @Size(max = 50)
     @Indexed(unique = true)
     private String email;
+
+    @NotBlank
+    @Size(max = 120)
+    private String password;
     private LocationInfo locationInfo;
     private String streamUrl;
+    private Boolean isStreaming;
+    private Boolean isLoggedIn;
 
-    public User(String firstName, String lastName, String email, LocationInfo locationInfo, String streamUrl) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    @DBRef
+    private Set<Role> roles = new HashSet<>();
+
+    public User(String email, LocationInfo locationInfo, String password, String streamUrl, Boolean isStreaming, Boolean isLoggedIn) {
         this.email = email;
         this.locationInfo = locationInfo;
+        this.password = password;
         this.streamUrl = streamUrl;
+        this.isStreaming = isStreaming;
+        this.isLoggedIn = isLoggedIn;
     }
 }

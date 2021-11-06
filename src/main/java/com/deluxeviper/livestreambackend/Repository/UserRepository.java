@@ -1,4 +1,4 @@
-package com.deluxeviper.livestreambackend;
+package com.deluxeviper.livestreambackend.Repository;
 
 import com.deluxeviper.livestreambackend.Models.User;
 import org.springframework.data.mongodb.repository.MongoRepository;

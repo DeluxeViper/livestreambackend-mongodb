@@ -13,6 +13,7 @@ import com.deluxeviper.livestreambackend.Services.RoleService;
 import com.deluxeviper.livestreambackend.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -59,7 +60,8 @@ public class AuthController {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        // TODO: Set user logged in property to true
+        // Set user logged in
+        userService.setUserLoggedIn(loginRequest.getEmail(), true);
 
         return ResponseEntity.ok(new JwtResponse(
                 jwt,
@@ -108,5 +110,16 @@ public class AuthController {
         userService.addUser(user);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
+
+    @PostMapping("/signout")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<?> signOutUser(@Valid @RequestParam(name="email") String email) {
+        if (!userService.userExistsByEmail(email)) {
+            return ResponseEntity.notFound().build();
+        }
+        userService.setUserLoggedIn(email, false);
+
+        return ResponseEntity.ok(new MessageResponse("User signed out sucessfully."));
     }
 }

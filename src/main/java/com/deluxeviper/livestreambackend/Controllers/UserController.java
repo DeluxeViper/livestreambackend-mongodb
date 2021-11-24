@@ -1,6 +1,7 @@
 package com.deluxeviper.livestreambackend.Controllers;
 
 import com.deluxeviper.livestreambackend.Models.User;
+import com.deluxeviper.livestreambackend.Payload.Response.ErrorResponse;
 import com.deluxeviper.livestreambackend.Security.JWT.JWTUtils;
 import com.deluxeviper.livestreambackend.Services.UserService;
 import lombok.AllArgsConstructor;
@@ -35,14 +36,17 @@ public class UserController {
     @GetMapping("/{email}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> fetchUserByEmail(@PathVariable String email, @RequestHeader(name = "Authorization") String token) {
+
+        // Verify that the JWT token provided is from a specific user (described by the email)
         String jwtEmail = jwtUtils.getUsernameFromJwtToken(token.split("Bearer ")[1]);
         if (!email.equals(jwtEmail)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body("{\"message\": \"Error requesting information from wrong user.\"}");
+                    .body(new ErrorResponse("Error. Requesting information from wrong user."));
         }
+
         User user = userService.findUserByEmail(email);
-        System.out.println(user);
+//        System.out.println(user);
         if (user != null) {
             return ResponseEntity.ok(user);
         } else {

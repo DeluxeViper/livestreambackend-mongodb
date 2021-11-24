@@ -6,6 +6,7 @@ import com.deluxeviper.livestreambackend.Models.User;
 import com.deluxeviper.livestreambackend.Models.UserDetailsImpl;
 import com.deluxeviper.livestreambackend.Payload.Request.LoginRequest;
 import com.deluxeviper.livestreambackend.Payload.Request.SignupRequest;
+import com.deluxeviper.livestreambackend.Payload.Response.ErrorResponse;
 import com.deluxeviper.livestreambackend.Payload.Response.JwtResponse;
 import com.deluxeviper.livestreambackend.Payload.Response.MessageResponse;
 import com.deluxeviper.livestreambackend.Security.JWT.JWTUtils;
@@ -17,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,8 +51,15 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        Authentication authentication;
+        try {
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        } catch (AuthenticationException authenticationException) {
+            System.out.println("authenticateUser: " + authenticationException);
+
+            return ResponseEntity.status(401).body(new ErrorResponse("Invalid Credentials."));
+        }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
@@ -76,7 +85,7 @@ public class AuthController {
         if (userService.userExistsByEmail(signupRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Email is already taken!"));
+                    .body(new ErrorResponse("Error"));
         }
 
         User user = new User(signupRequest.getEmail(),

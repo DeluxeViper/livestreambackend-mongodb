@@ -30,14 +30,16 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public List<User> fetchAllUsers() {
         return userService.getAllUsers();
     }
 
+    @GetMapping("/loggedin")
+    public List<User> fetchAllLoggedInUsers() {
+        return userService.getAllLoggedInUsers();
+    }
 
     @GetMapping("/{email}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> fetchUserByEmail(@PathVariable String email, @RequestHeader(name = "Authorization") String token) {
 
         // Verify that the JWT token provided is from a specific user (described by the email)

@@ -40,6 +40,10 @@ public class UserService {
 //                });
     }
 
+    public List<User> getAllLoggedInUsers() {
+        return userRepository.findAllByIsLoggedInIsTrue().collectList().block();
+    }
+
     public Boolean userExistsByEmail(String email) {
         return userRepository.findByEmail(email).hasElement().block();
     }
@@ -93,6 +97,7 @@ public class UserService {
         assert database != null;
         MongoCollection<Document> collection = database.getCollection("user");
 
+        // TODO: Refactor this to listen for changes for only users that are logged in
         return Flux.from(collection.watch(Arrays.asList(Aggregates.match(Filters.in("operationType", Arrays.asList("insert", "update", "replace", "delete")))))
                 .fullDocument(FullDocument.UPDATE_LOOKUP)).map(ChangeStreamDocument::getFullDocument);
     }

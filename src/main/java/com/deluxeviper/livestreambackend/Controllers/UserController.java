@@ -1,5 +1,6 @@
 package com.deluxeviper.livestreambackend.Controllers;
 
+import com.deluxeviper.livestreambackend.Models.LocationInfo;
 import com.deluxeviper.livestreambackend.Models.User;
 import com.deluxeviper.livestreambackend.Payload.Response.ErrorResponse;
 import com.deluxeviper.livestreambackend.Security.JWT.JWTUtils;
@@ -11,7 +12,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -46,11 +49,42 @@ public class UserController {
         }
 
         User user = userService.findUserByEmail(email);
-//        System.out.println(user);
         if (user != null) {
             return ResponseEntity.ok(user);
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping(path = "/subscribeToUsers", produces = "application/stream+json")
+    public Flux<Object> subscribeToUsers() {
+
+        return this.userService.subscribeToUsersCollection();
+    }
+
+    @PutMapping(path = "{userId}/updateUserLocation", produces = "application/json")
+    public ResponseEntity<?> updateUserLocation(@NotNull @PathVariable(name = "userId") String userId, @NotNull @RequestBody LocationInfo locationInfo) {
+        User user = userService.updateLocation(userId, locationInfo);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(new ErrorResponse("Error. User not found."));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
+                .body(user);
+    }
+
+    @PutMapping(path = "{userId}/setStreaming", produces = "application/json")
+    public ResponseEntity<?> setIsStreaming(@NotNull @PathVariable(name = "userId") String userId, @NotNull @RequestParam Boolean isStreaming) {
+        User user = userService.isStreaming(userId, isStreaming);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(new ErrorResponse("Error. User not found."));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
+                .body(user);
     }
 }

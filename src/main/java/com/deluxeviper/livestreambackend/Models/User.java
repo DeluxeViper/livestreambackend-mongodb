@@ -1,6 +1,7 @@
 package com.deluxeviper.livestreambackend.Models;
 
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -13,6 +14,7 @@ import java.util.Set;
 
 @Data
 @Document
+@ToString
 public class User {
     @Id
     private String id;
@@ -30,8 +32,7 @@ public class User {
     private Boolean isStreaming;
     private Boolean isLoggedIn;
 
-    @DBRef
-    private Set<Role> roles = new HashSet<>();
+//    private Set<Role> roles = new HashSet<>();
 
     public User(String email, LocationInfo locationInfo, String password, String streamUrl, Boolean isStreaming, Boolean isLoggedIn) {
         this.email = email;

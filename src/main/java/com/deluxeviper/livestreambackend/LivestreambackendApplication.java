@@ -1,24 +1,26 @@
 package com.deluxeviper.livestreambackend;
 
-import com.deluxeviper.livestreambackend.Models.LocationInfo;
-import com.deluxeviper.livestreambackend.Models.User;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-
-import java.util.List;
+import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 
 @SpringBootApplication(exclude = {
         org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class})
-public class LivestreambackendApplication {
+@EnableReactiveMongoRepositories
+public class LivestreambackendApplication
+{
 
     public static void main(String[] args) {
         SpringApplication.run(LivestreambackendApplication.class, args);
     }
+
+//    @Bean
+//    CommandLineRunner runner(UserRepository repository) {
+//        return args -> {
+////            MongoCollection<User> grades = db.getCollection("grades", Grade.class);
+//
+//        };
+//    }
 
 //	@Bean
 //	CommandLineRunner runner(UserRepository repository, MongoTemplate mongoTemplate) {

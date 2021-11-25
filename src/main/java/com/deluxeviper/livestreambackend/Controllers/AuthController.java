@@ -1,9 +1,6 @@
 package com.deluxeviper.livestreambackend.Controllers;
 
-import com.deluxeviper.livestreambackend.Models.ERole;
-import com.deluxeviper.livestreambackend.Models.Role;
-import com.deluxeviper.livestreambackend.Models.User;
-import com.deluxeviper.livestreambackend.Models.UserDetailsImpl;
+import com.deluxeviper.livestreambackend.Models.*;
 import com.deluxeviper.livestreambackend.Payload.Request.LoginRequest;
 import com.deluxeviper.livestreambackend.Payload.Request.SignupRequest;
 import com.deluxeviper.livestreambackend.Payload.Response.ErrorResponse;
@@ -52,6 +49,7 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication;
+
         try {
             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
@@ -89,7 +87,7 @@ public class AuthController {
         }
 
         User user = new User(signupRequest.getEmail(),
-                null,
+                new LocationInfo(-200.0, -200.0),
                 encoder.encode(signupRequest.getPassword()),
                 "",
                 false,
@@ -98,32 +96,31 @@ public class AuthController {
         Set<String> strRoles = signupRequest.getRoles();
         Set<Role> roles = new HashSet<>();
 
-        if (strRoles == null) {
-            Role userRole = roleService.findByName(ERole.ROLE_USER);
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "admin":
-                        Role adminRole = roleService.findByName(ERole.ROLE_ADMIN);
-                        roles.add(adminRole);
-                        break;
-                    default:
-                        Role userRole = roleService.findByName(ERole.ROLE_USER);
-                        roles.add(userRole);
-                }
-            });
-        }
+//        if (strRoles == null) {
+//            Role userRole = roleService.findByName(ERole.ROLE_USER);
+//            roles.add(userRole);
+//        } else {
+//            strRoles.forEach(role -> {
+//                switch (role) {
+//                    case "admin":
+//                        Role adminRole = roleService.findByName(ERole.ROLE_ADMIN);
+//                        roles.add(adminRole);
+//                        break;
+//                    default:
+//                        Role userRole = roleService.findByName(ERole.ROLE_USER);
+//                        roles.add(userRole);
+//                }
+//            });
+//        }
 
-        user.setRoles(roles);
+//        user.setRoles(roles);
         userService.addUser(user);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
     @PostMapping("/signout")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<?> signOutUser(@Valid @RequestParam(name="email") String email) {
+    public ResponseEntity<?> signOutUser(@Valid @RequestParam(name = "email") String email) {
         if (!userService.userExistsByEmail(email)) {
             return ResponseEntity.notFound().build();
         }

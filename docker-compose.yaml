@@ -1,4 +1,4 @@
-version: "5.0"
+version: "3.0"
 services:
   mongo:
     image: mongo:4.2
@@ -25,6 +25,11 @@ services:
       - ME_CONFIG_MONGODB_ADMINUSERNAME=rootuser
       - ME_CONFIG_MONGODB_ADMINPASSWORD=rootpass
       - ME_CONFIG_MONGODB_SERVER=mongo
+  nginx-rtmp:
+    image: tiangolo/nginx-rtmp
+    container_name: nginx-rtmp-container
+    ports:
+      - 1935:1935
 volumes:
   data: {}
 

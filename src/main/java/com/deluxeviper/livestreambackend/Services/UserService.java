@@ -58,6 +58,22 @@ public class UserService {
 
     }
 
+    public User updateUser(User user) {
+        Optional<User> optUser = userRepository.findByEmail(user.getEmail()).blockOptional();
+        if (optUser.isPresent()) {
+            User foundUser = optUser.get();
+            foundUser.setIsStreaming(user.getIsStreaming());
+            foundUser.setLocationInfo(user.getLocationInfo());
+            foundUser.setIsLoggedIn(user.getIsLoggedIn());
+            foundUser.setEmail(user.getEmail());
+            foundUser.setStreamUrl(user.getStreamUrl());
+
+            return userRepository.save(foundUser).block();
+        }
+
+        return null;
+    }
+
     public void setUserLoggedIn(String email, Boolean isLoggedIn) {
         Optional<User> user = userRepository.findByEmail(email).blockOptional();
         if (user.isPresent()) {

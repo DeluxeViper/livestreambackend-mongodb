@@ -16,7 +16,7 @@ public class SignupRequest {
     @Size(min = 6, max = 40)
     private String password;
 
-    private Set<String> roles;
+//    private Set<String> roles;
 
     public String getEmail() {
         return email;
@@ -34,11 +34,11 @@ public class SignupRequest {
         this.password = password;
     }
 
-    public Set<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
-    }
+//    public Set<String> getRoles() {
+//        return roles;
+//    }
+//
+//    public void setRoles(Set<String> roles) {
+//        this.roles = roles;
+//    }
 }

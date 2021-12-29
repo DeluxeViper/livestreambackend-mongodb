@@ -9,6 +9,7 @@ import com.deluxeviper.livestreambackend.Payload.Response.MessageResponse;
 import com.deluxeviper.livestreambackend.Security.JWT.JWTUtils;
 import com.deluxeviper.livestreambackend.Services.RoleService;
 import com.deluxeviper.livestreambackend.Services.UserService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -93,7 +94,7 @@ public class AuthController {
                 false,
                 false);
 
-        Set<String> strRoles = signupRequest.getRoles();
+//        Set<String> strRoles = signupRequest.getRoles();
         Set<Role> roles = new HashSet<>();
 
 //        if (strRoles == null) {
@@ -127,5 +128,21 @@ public class AuthController {
         userService.setUserLoggedIn(email, false);
 
         return ResponseEntity.ok(new MessageResponse("User signed out sucessfully."));
+    }
+
+    @GetMapping("/stream")
+    public ResponseEntity<?> authenticateStream(
+            @RequestParam(name="name", required = false) String name) {
+        if (name == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        boolean userExists = userService.userExistsByEmail(name);
+
+        if (userExists) {
+            return ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.status(401).build();
     }
 }

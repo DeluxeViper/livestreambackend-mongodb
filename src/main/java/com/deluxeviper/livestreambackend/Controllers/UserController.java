@@ -2,16 +2,13 @@ package com.deluxeviper.livestreambackend.Controllers;
 
 import com.deluxeviper.livestreambackend.Models.LocationInfo;
 import com.deluxeviper.livestreambackend.Models.User;
-import com.deluxeviper.livestreambackend.Payload.Response.ErrorResponse;
 import com.deluxeviper.livestreambackend.Security.JWT.JWTUtils;
 import com.deluxeviper.livestreambackend.Services.UserService;
 import lombok.AllArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
@@ -73,7 +70,7 @@ public class UserController {
         if (updatedUser == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(new ErrorResponse("Error. User not found."));
+                    .body("Error. User not found.");
         }
 
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
@@ -86,7 +83,7 @@ public class UserController {
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(new ErrorResponse("Error. User not found."));
+                    .body("Error. User not found.");
         }
 
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
@@ -99,7 +96,7 @@ public class UserController {
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(new ErrorResponse("Error. User not found."));
+                    .body("Error. User not found.");
         }
 
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)

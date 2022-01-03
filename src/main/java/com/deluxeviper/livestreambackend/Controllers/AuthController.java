@@ -3,7 +3,6 @@ package com.deluxeviper.livestreambackend.Controllers;
 import com.deluxeviper.livestreambackend.Models.*;
 import com.deluxeviper.livestreambackend.Payload.Request.LoginRequest;
 import com.deluxeviper.livestreambackend.Payload.Request.SignupRequest;
-import com.deluxeviper.livestreambackend.Payload.Response.ErrorResponse;
 import com.deluxeviper.livestreambackend.Payload.Response.JwtResponse;
 import com.deluxeviper.livestreambackend.Payload.Response.MessageResponse;
 import com.deluxeviper.livestreambackend.Security.JWT.JWTUtils;
@@ -57,7 +56,7 @@ public class AuthController {
         } catch (AuthenticationException authenticationException) {
             System.out.println("authenticateUser: " + authenticationException);
 
-            return ResponseEntity.status(401).body(new ErrorResponse("Invalid Credentials."));
+            return ResponseEntity.status(401).body("Invalid Credentials. Please try again.");
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -84,7 +83,7 @@ public class AuthController {
         if (userService.userExistsByEmail(signupRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new ErrorResponse("Error"));
+                    .body("Error. Email is already registered.");
         }
 
         User user = new User(signupRequest.getEmail(),

@@ -6,7 +6,7 @@ MongoDB backend for potential livestream Android app
 
 ### (Required) MongoDB replicaset setup: 
 
-**Note**: The replicaset for MongoDB *must* be setup due to the changestreams used
+**Note**: Upon Docker container creation the replicaset for MongoDB *must* be setup due to the changestreams used
 
 1. Recreate the container
 2. Accessing MongoDB's instance: `mongo -u "rootuser" -p "rootpass"`
